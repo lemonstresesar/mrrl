@@ -26,12 +26,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+export const INITIAL_DEMO_ACCOUNTS: DemoAccount[] = [
+  { role: 'admin', roleLibelle: 'Administrateur Général', email: 'admin@hgd.cm', password: 'Admin123!', nom: 'Samuel Mbassi', description: 'Supervision globale, gestion des utilisateurs, paramètres & audit.' },
+  { role: 'logistique', roleLibelle: 'Responsable Logistique', email: 'logistique@hgd.cm', password: 'Logistique123!', nom: 'Chantal Ngo Bisseck', description: 'Gestion des équipements, disponibilité des lits & double validation.' },
+  { role: 'pharmacien', roleLibelle: 'Pharmacien Hospitalier', email: 'pharmacie@hgd.cm', password: 'Pharmacie123!', nom: 'Dr. Jean-Marc Eyenga', description: 'Gestion des stocks de médicaments selon la règle FEFO & stupéfiants.' },
+  { role: 'maintenance', roleLibelle: 'Technicien Biomédical', email: 'maintenance@hgd.cm', password: 'Maintenance123!', nom: 'Gervais Tchouassi', description: 'Maintenance préventive/curative & scans des codes QR équipements.' },
+  { role: 'chef_service', roleLibelle: 'Chef de Service (Urgences)', email: 'chef.urgences@hgd.cm', password: 'Chef123!', nom: 'Pr. Alain Kamga', description: 'Vue lits du service, demandes de matériel & alertes d\'urgence.' },
+];
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [service, setService] = useState<Service | null>(null);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('hgd_jwt_token'));
   const [loading, setLoading] = useState<boolean>(true);
-  const [demoAccounts, setDemoAccounts] = useState<DemoAccount[]>([]);
+  const [demoAccounts, setDemoAccounts] = useState<DemoAccount[]>(INITIAL_DEMO_ACCOUNTS);
 
   useEffect(() => {
     // Charger les informations sur les comptes de démonstration
