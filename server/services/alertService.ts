@@ -1,39 +1,43 @@
-import nodemailer from 'nodemailer';
-import cron from 'node-cron';
 import { store } from '../data/store';
 import { Alerte, AlerteNiveau, AlerteType, JournalSMS } from '../data/types';
 
-// Configuration du transporteur Nodemailer (Email réel si configuré en variables d'environnement)
-let mailTransporter: ReturnType<typeof nodemailer.createTransport> | null = null;
+// Configuration dynamique du transporteur Nodemailer
+let mailTransporter: any = null;
 
-if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-  try {
-    mailTransporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-  } catch (err) {
-    console.warn('[MAIL] Erreur d\'initialisation du transporteur SMTP :', err);
+async function getTransporter() {
+  if (mailTransporter) return mailTransporter;
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    try {
+      const nodemailer = await import('nodemailer');
+      mailTransporter = nodemailer.default.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: Number(process.env.SMTP_PORT) === 465,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+    } catch (err) {
+      console.warn('[MAIL] Erreur d\'initialisation du transporteur SMTP :', err);
+    }
   }
+  return mailTransporter;
 }
 
 /**
  * Envoie un email réel ou journalise si non configuré
  */
 export async function sendEmailNotification(to: string, subject: string, text: string, html?: string): Promise<boolean> {
-  if (!mailTransporter) {
+  const transporter = await getTransporter();
+  if (!transporter) {
     // Mode démonstration / fallback console
     console.log(`[EMAIL DISPATCH SIMULÉ] Vers: ${to} | Sujet: ${subject}`);
     return true;
   }
 
   try {
-    await mailTransporter.sendMail({
+    await transporter.sendMail({
       from: process.env.SMTP_FROM || 'alertes-ressources@hgd-douala.cm',
       to,
       subject,
@@ -225,19 +229,28 @@ export function runAlertScan(): { count: number; scannedAt: string } {
 /**
  * Démarre le planificateur automatique node-cron
  */
-export function initAlertScheduler() {
+export async function initAlertScheduler() {
   // Lancer un premier scan au démarrage
   runAlertScan();
 
-  // Planification : toutes les 15 minutes (*/15 * * * *)
-  cron.schedule('*/15 * * * *', () => {
-    try {
-      console.log('[NODE-CRON] Exécution de la vérification planifiée des alertes HGD...');
-      runAlertScan();
-    } catch (err) {
-      console.error('[NODE-CRON] Erreur lors du scan d\'alertes :', err);
-    }
-  });
+  // En environnement serverless (Netlify, AWS Lambda), pas de tâche de fond cron persistante
+  if (process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return;
+  }
 
-  console.log('[NODE-CRON] Planificateur d\'alertes médicales HGD initialisé avec succès.');
+  try {
+    const cron = await import('node-cron');
+    cron.default.schedule('*/15 * * * *', () => {
+      try {
+        console.log('[NODE-CRON] Exécution de la vérification planifiée des alertes HGD...');
+        runAlertScan();
+      } catch (err) {
+        console.error('[NODE-CRON] Erreur lors du scan d\'alertes :', err);
+      }
+    });
+
+    console.log('[NODE-CRON] Planificateur d\'alertes médicales HGD initialisé avec succès.');
+  } catch (err) {
+    console.warn('[NODE-CRON] Exécution du planificateur ignorée en environnement serverless.');
+  }
 }

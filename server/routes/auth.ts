@@ -7,6 +7,7 @@ import {
   checkLoginRateLimit,
   registerFailedLoginAttempt,
   clearLoginAttempts,
+  getClientIp,
   AuthenticatedRequest,
 } from '../middleware/auth';
 import { recordAudit } from '../services/auditService';
@@ -64,7 +65,7 @@ authRouter.get('/demo-accounts', (_req: Request, res: Response) => {
 // Connexion standard par email et mot de passe
 authRouter.post('/login', checkLoginRateLimit, (req: Request, res: Response): void => {
   const { email, password } = req.body;
-  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const ip = getClientIp(req);
 
   if (!email || !password) {
     res.status(400).json({ error: 'L\'email et le mot de passe sont obligatoires.' });

@@ -53,7 +53,8 @@ export function createApp(): Express {
   apiRouter.use('/audit-log', auditRouter);
   apiRouter.use('/admin', adminRouter);
 
-  // Monter sous /api et à la racine pour compatibilité Netlify Functions
+  // Monter sous /.netlify/functions/api, /api et à la racine pour compatibilité totale Netlify
+  app.use('/.netlify/functions/api', apiRouter);
   app.use('/api', apiRouter);
   app.use('/', apiRouter);
 

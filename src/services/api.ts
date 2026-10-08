@@ -26,12 +26,12 @@ function getAuthHeaders(): HeadersInit {
   };
 }
 
-// Gestionnaire de secours pour déploiement Netlify statique sans Serverless Function
+// Gestionnaire de secours pour déploiement Netlify statique sans Serverless Function ou en cas d'erreur passerelle 502
 function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T {
   const method = (options.method || 'GET').toUpperCase();
   const body = options.body ? JSON.parse(options.body as string) : {};
 
-  // Auth
+  // 1. Auth & Comptes
   if (endpoint.includes('/auth/demo-accounts')) {
     return {
       accounts: [
@@ -45,24 +45,38 @@ function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T
   }
 
   if (endpoint.includes('/auth/demo-login') || endpoint.includes('/auth/login')) {
-    const role = body.role || 'admin';
-    const foundUser = clientMockStore.users.find(u => u.role === role) || clientMockStore.users[0];
+    let foundUser: User | undefined;
+    if (body.role) {
+      foundUser = clientMockStore.users.find(u => u.role === body.role);
+    } else if (body.email) {
+      const emailLower = String(body.email).toLowerCase().trim();
+      foundUser = clientMockStore.users.find(u => u.email.toLowerCase() === emailLower);
+    }
+    if (!foundUser) {
+      foundUser = clientMockStore.users[0];
+    }
     const token = `fake-jwt-token-netlify-${Date.now()}`;
+    try {
+      localStorage.setItem('hgd_active_user_id', String(foundUser.id));
+    } catch {}
+
     return {
       token,
       user: foundUser,
-      service: clientMockStore.services.find(s => s.id === foundUser.service_id) || null
+      service: clientMockStore.services.find(s => s.id === foundUser?.service_id) || null
     } as T;
   }
 
   if (endpoint.includes('/auth/me')) {
+    const savedUserId = Number(localStorage.getItem('hgd_active_user_id')) || 1;
+    const currentUser = clientMockStore.users.find(u => u.id === savedUserId) || clientMockStore.users[0];
     return {
-      user: clientMockStore.users[0],
-      service: clientMockStore.services[0]
+      user: currentUser,
+      service: clientMockStore.services.find(s => s.id === currentUser.service_id) || null
     } as T;
   }
 
-  // Équipements
+  // 2. Équipements
   if (endpoint.startsWith('/equipements')) {
     if (endpoint.includes('/qr-code')) {
       return {
@@ -81,7 +95,7 @@ function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T
     return { equipements: enriched } as T;
   }
 
-  // Stocks
+  // 3. Stocks & Lots
   if (endpoint.startsWith('/stocks/produits')) {
     const enriched = clientMockStore.produits.map(p => ({
       ...p,
@@ -104,7 +118,39 @@ function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T
     return { lots: enriched } as T;
   }
 
-  // Stupéfiants
+  if (endpoint.includes('/stocks/mouvements')) {
+    const mouvements: MouvementStock[] = [
+      {
+        id: 1,
+        type_mouvement: 'entree',
+        produit_id: 3,
+        produit_designation: 'Paracétamol Injectable 100ml',
+        lot_id: 5,
+        numero_lot: 'PCM-URG-2026-C01',
+        quantite: 150,
+        motif: 'Livraison commande CMD-HGD-2026-0041',
+        utilisateur_id: 2,
+        utilisateur_nom: 'Chantal Ngo Bisseck',
+        date_mouvement: '2026-10-02T10:00:00Z',
+      },
+      {
+        id: 2,
+        type_mouvement: 'sortie',
+        produit_id: 3,
+        produit_designation: 'Paracétamol Injectable 100ml',
+        lot_id: 5,
+        numero_lot: 'PCM-URG-2026-C01',
+        quantite: 20,
+        motif: 'Sortie FEFO Service Urgences',
+        utilisateur_id: 3,
+        utilisateur_nom: 'Dr. Jean-Marc Eyenga',
+        date_mouvement: '2026-10-06T15:30:00Z',
+      }
+    ];
+    return { mouvements } as T;
+  }
+
+  // 4. Stupéfiants (Produits contrôlés)
   if (endpoint.includes('/controlled-substances/registry')) {
     const enriched = clientMockStore.sortiesControlees.map(s => ({
       ...s,
@@ -130,7 +176,7 @@ function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T
     return { pending: enriched } as T;
   }
 
-  // Maintenance
+  // 5. Maintenance
   if (endpoint.startsWith('/maintenance')) {
     const enriched = clientMockStore.maintenances.map(m => ({
       ...m,
@@ -143,16 +189,46 @@ function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T
     return { maintenances: enriched } as T;
   }
 
-  // Alertes
-  if (endpoint.startsWith('/alertes/sms-journal')) {
-    return { journal_sms: [] } as T;
+  // 6. Fournisseurs & Commandes
+  if (endpoint.includes('/fournisseurs/comparateur')) {
+    const comparateur = clientMockStore.fournisseurs.map(f => ({
+      fournisseur_id: f.id,
+      fournisseur_nom: f.nom,
+      delai_moyen_jours: f.delai_moyen_jours,
+      note_fiabilite: f.note_fiabilite,
+      nb_commandes: f.total_commandes || 10,
+      taux_livraison_ponctuelle: f.taux_succes_pct || 90,
+      produits_fournis: [
+        { designation: 'Paracétamol Injectable 100ml', prix_unitaire_cfa: 650, delai_jours: f.delai_moyen_jours },
+        { designation: 'Ringer Lactate 500ml', prix_unitaire_cfa: 450, delai_jours: f.delai_moyen_jours },
+      ],
+    }));
+    return { comparateur } as T;
+  }
+
+  if (endpoint.includes('/fournisseurs/commandes')) {
+    return { commandes: clientMockStore.commandes } as T;
+  }
+
+  if (endpoint.startsWith('/fournisseurs')) {
+    return { fournisseurs: clientMockStore.fournisseurs } as T;
+  }
+
+  // 7. Allocations
+  if (endpoint.startsWith('/allocations')) {
+    return { allocations: clientMockStore.demandesAllocation } as T;
+  }
+
+  // 8. Alertes & SMS
+  if (endpoint.includes('/alertes/sms-journal')) {
+    return { journal_sms: clientMockStore.journalSMS } as T;
   }
 
   if (endpoint.startsWith('/alertes')) {
-    return { alertes: clientMockStore.alertes, total_non_lues: clientMockStore.alertes.length } as T;
+    return { alertes: clientMockStore.alertes, total_non_lues: clientMockStore.alertes.filter(a => !a.est_lu).length } as T;
   }
 
-  // Stats
+  // 9. Tableau de bord & Statistiques
   if (endpoint.includes('/reports/dashboard-stats')) {
     return {
       equipements: { total: 7, en_service: 5, en_maintenance: 1, hors_service: 1, taux_disponibilite_pct: 71 },
@@ -164,6 +240,24 @@ function handleStaticFallback<T>(endpoint: string, options: RequestInit = {}): T
         service_id: s.id, service_nom: s.nom, service_code: s.code, total_equipements: 2, en_service: 2, en_panne: 0, lits_libres: 1
       }))
     } as T;
+  }
+
+  // 10. Audit Log
+  if (endpoint.startsWith('/audit-log')) {
+    return { audit_log: clientMockStore.journalAudit } as T;
+  }
+
+  // 11. Administration
+  if (endpoint.includes('/admin/users')) {
+    return { users: clientMockStore.users } as T;
+  }
+
+  if (endpoint.includes('/admin/services')) {
+    return { services: clientMockStore.services } as T;
+  }
+
+  if (endpoint.includes('/admin/settings')) {
+    return { settings: clientMockStore.settings } as T;
   }
 
   return {} as T;
@@ -179,23 +273,42 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
       },
     });
 
-    // Si le serveur backend Express ou la fonction Netlify répond
-    if (res.status !== 404) {
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || `Erreur requête (${res.status})`);
-      }
-      return data;
+    // Si la réponse est valide (2xx)
+    if (res.ok) {
+      return await res.json();
     }
+
+    // Erreurs applicatives explicites (mot de passe faux, refus FEFO, etc.)
+    if (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 422 || res.status === 429) {
+      const data = await res.json().catch(() => null);
+      if (data && data.error) {
+        throw new Error(data.error);
+      }
+    }
+
+    // Si le serveur renvoie 502, 503, 504 ou 404 (Passerelle Netlify en panne ou hébergement statique)
+    console.warn(`[API] Réponse HTTP ${res.status} détectée sur Netlify (${endpoint}). Basculement transparent sur le magasin local résilient.`);
+    return handleStaticFallback<T>(endpoint, options);
   } catch (err: any) {
-    // Si c'est une vraie erreur de validation du backend (ex: FEFO bloqué), propager l'erreur
-    if (err.message && !err.message.includes('Failed to fetch') && !err.message.includes('404')) {
+    // Si c'est une vraie erreur applicative explicite
+    const msg = String(err?.message || '');
+    if (
+      msg &&
+      !msg.includes('502') &&
+      !msg.includes('500') &&
+      !msg.includes('503') &&
+      !msg.includes('504') &&
+      !msg.includes('Failed to fetch') &&
+      !msg.includes('NetworkError') &&
+      !msg.includes('Load failed') &&
+      !msg.includes('Erreur requête')
+    ) {
       throw err;
     }
-  }
 
-  // Fallback si l'API est absente (ex: Netlify hébergement statique pur sans Serverless Functions)
-  return handleStaticFallback<T>(endpoint, options);
+    console.warn(`[API] Erreur passerelle ou réseau (${msg}). Basculement automatique sur le mode de secours local.`);
+    return handleStaticFallback<T>(endpoint, options);
+  }
 }
 
 export const api = {

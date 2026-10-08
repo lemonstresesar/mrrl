@@ -16,7 +16,12 @@
 # 1. Redirection des requêtes API REST vers la fonction Serverless Netlify
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/api/*"
+  to = "/.netlify/functions/api"
   status = 200
 
 # 2. Redirection des routes SPA (Single Page Application) vers index.html

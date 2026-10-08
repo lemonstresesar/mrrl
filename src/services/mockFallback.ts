@@ -362,6 +362,190 @@ class ClientMockStore {
       created_at: '2026-10-06T08:00:00Z',
     }
   ];
+
+  public fournisseurs: Fournisseur[] = [
+    {
+      id: 1,
+      nom: 'Laborex Cameroun S.A.',
+      contact_nom: 'M. Paul Atangana',
+      telephone: '+237 233 42 15 80',
+      email: 'commandes@laborex-cameroun.cm',
+      adresse: 'Zone Industrielle de Bassa',
+      ville: 'Douala',
+      delai_moyen_jours: 3,
+      note_fiabilite: 4.8,
+      total_commandes: 12,
+      total_livrees: 11,
+      taux_succes_pct: 92,
+      volume_total_cfa: 15400000,
+    },
+    {
+      id: 2,
+      nom: 'Biomed Cameroun Technologies',
+      contact_nom: 'Ing. Claire Manga',
+      telephone: '+237 233 43 78 90',
+      email: 'support@biomed-cam.com',
+      adresse: 'Rue Prince Bell, Bali',
+      ville: 'Douala',
+      delai_moyen_jours: 7,
+      note_fiabilite: 4.5,
+      total_commandes: 8,
+      total_livrees: 7,
+      taux_succes_pct: 88,
+      volume_total_cfa: 28500000,
+    },
+    {
+      id: 3,
+      nom: 'UCAM Pharmacie Centrale Grossiste',
+      contact_nom: 'Dr. Jean-Pierre Mbida',
+      telephone: '+237 222 23 45 67',
+      email: 'appro@ucam-sante.cm',
+      adresse: 'Boulevard de la Liberté, Akwa',
+      ville: 'Douala',
+      delai_moyen_jours: 2,
+      note_fiabilite: 4.9,
+      total_commandes: 20,
+      total_livrees: 20,
+      taux_succes_pct: 100,
+      volume_total_cfa: 34200000,
+    }
+  ];
+
+  public commandes: Commande[] = [
+    {
+      id: 1,
+      reference: 'CMD-HGD-2026-0041',
+      fournisseur_id: 1,
+      fournisseur_nom: 'Laborex Cameroun S.A.',
+      fournisseur_telephone: '+237 233 42 15 80',
+      date_commande: '2026-10-02',
+      date_livraison_estimee: '2026-10-08',
+      date_reception_reelle: null,
+      statut: 'en_attente',
+      montant_total_cfa: 2450000,
+      cree_par_id: 2,
+      createur_nom: 'Chantal Ngo Bisseck',
+      commentaires: 'Réapprovisionnement d\'urgence solutés et antalgiques.',
+      lignes: [
+        { id: 1, designation: 'Ringer Lactate 500ml', quantite: 200, prix_unitaire_cfa: 450 },
+        { id: 2, designation: 'Paracétamol Injectable 100ml', quantite: 300, prix_unitaire_cfa: 650 },
+      ],
+    },
+    {
+      id: 2,
+      reference: 'CMD-HGD-2026-0038',
+      fournisseur_id: 2,
+      fournisseur_nom: 'Biomed Cameroun Technologies',
+      fournisseur_telephone: '+237 233 43 78 90',
+      date_commande: '2026-09-15',
+      date_livraison_estimee: '2026-09-22',
+      date_reception_reelle: '2026-09-21',
+      statut: 'livree',
+      montant_total_cfa: 12500000,
+      cree_par_id: 2,
+      createur_nom: 'Chantal Ngo Bisseck',
+      commentaires: 'Capteurs d\'oxygène et filtres antibactériens ventilateurs.',
+      lignes: [
+        { id: 3, designation: 'Cellule O2 Dräger Evita', quantite: 4, prix_unitaire_cfa: 350000 },
+      ],
+    }
+  ];
+
+  public demandesAllocation: DemandeAllocation[] = [
+    {
+      id: 1,
+      service_demandeur_id: 1,
+      service_demandeur_nom: 'Service des Urgences & Réanimation',
+      chef_service_id: 5,
+      chef_service_nom: 'Pr. Alain Kamga',
+      type_ressource: 'equipement',
+      designation_ressource: 'Respirateur de Transport d\'Urgence',
+      quantite: 1,
+      justification: 'Augmentation des admissions en détresse respiratoire.',
+      urgence: 'urgente',
+      statut: 'en_attente',
+      traite_par_id: null,
+      traite_par_nom: null,
+      date_traitement: null,
+      date_demande: '2026-10-06T14:30:00Z',
+      commentaire_reponse: null,
+    },
+    {
+      id: 2,
+      service_demandeur_id: 2,
+      service_demandeur_nom: 'Maternité & Néonatalogie',
+      chef_service_id: 5,
+      chef_service_nom: 'Pr. Alain Kamga',
+      type_ressource: 'lit',
+      designation_ressource: 'Lit d\'Hospitalisation Maternité',
+      quantite: 2,
+      justification: 'Pic d\'accouchements gémellaires prévus ce week-end.',
+      urgence: 'normale',
+      statut: 'approuvee',
+      traite_par_id: 2,
+      traite_par_nom: 'Chantal Ngo Bisseck',
+      date_traitement: '2026-10-07T09:00:00Z',
+      date_demande: '2026-10-05T10:00:00Z',
+      commentaire_reponse: '2 lits transférés depuis le stock central.',
+    }
+  ];
+
+  public journalSMS: JournalSMS[] = [
+    {
+      id: 1,
+      destinataire_nom: 'Dr. Jean-Marc Eyenga (Pharmacie)',
+      telephone: '+237 699 12 34 56',
+      type_alerte: 'PEREMPTION_PROCHE',
+      message: '[HGD PHARMACIE] Alerte péremption : Lot PCM-URG-2026-C01 (Paracétamol) périme dans 17 jours.',
+      statut_envoi: 'ENVOYÉ_SIMULÉ',
+      date_envoi: '2026-10-08T07:00:00Z',
+    },
+    {
+      id: 2,
+      destinataire_nom: 'Gervais Tchouassi (Biomed)',
+      telephone: '+237 677 89 01 23',
+      type_alerte: 'RETARD_MAINTENANCE',
+      message: '[HGD BIOMED] Retard maintenance sur Générateur Valleylab (salle Opératoire 2).',
+      statut_envoi: 'ENVOYÉ_SIMULÉ',
+      date_envoi: '2026-10-08T07:00:00Z',
+    }
+  ];
+
+  public journalAudit: JournalAudit[] = [
+    {
+      id: 1,
+      utilisateur_id: 1,
+      utilisateur_nom: 'Samuel Mbassi',
+      role: 'admin',
+      action: 'INITIALISATION_SYSTEME',
+      entite: 'System',
+      entite_id: 'HGD-MEDIGEST-2026',
+      details: 'Base de données initialisée avec jeux d\'essais Hôpital Général de Douala.',
+      ip_address: '127.0.0.1',
+      created_at: '2026-10-08T06:00:00Z',
+    },
+    {
+      id: 2,
+      utilisateur_id: 3,
+      utilisateur_nom: 'Dr. Jean-Marc Eyenga',
+      role: 'pharmacien',
+      action: 'INITIATION_SORTIE_CONTROLEE',
+      entite: 'SortieControlee',
+      entite_id: '2',
+      details: 'Initiation sortie 5 ampoules de Morphine pour PAT-HGD-9104.',
+      ip_address: '192.168.1.45',
+      created_at: '2026-10-07T11:20:00Z',
+    }
+  ];
+
+  public settings: Record<string, any> = {
+    seuil_peremption_proche_jours: 90,
+    seuil_peremption_critique_jours: 30,
+    email_alertes_actif: true,
+    sms_simulation_actif: true,
+    email_destinataire_principal: 'direction-medicale@hgd-douala.cm',
+    fefo_strict_mode: true,
+  };
 }
 
 export const clientMockStore = new ClientMockStore();
