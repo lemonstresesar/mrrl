@@ -1,0 +1,6 @@
+{
+  "name": "HGD MediGest - Gestion des Ressources Médicales",
+  "description": "Système intégré de gestion des ressources médicales, équipements, stocks FEFO, produits contrôlés et maintenance de l'Hôpital Général de Douala.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
