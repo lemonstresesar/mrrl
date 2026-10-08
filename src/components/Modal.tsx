@@ -40,26 +40,27 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
       <div
-        className={`bg-white rounded-xl shadow-2xl border border-slate-200 w-full ${widthClasses[maxWidth]} overflow-hidden animate-in fade-in zoom-in-95 duration-150`}
+        className={`bg-white rounded-xl shadow-2xl border border-slate-200 w-full ${widthClasses[maxWidth]} overflow-hidden animate-in fade-in zoom-in-95 duration-150 my-auto`}
       >
         {/* Header */}
-        <div className="px-6 py-4 bg-[#1F3864] text-white flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-base tracking-wide text-white">{title}</h3>
-            {subtitle && <p className="text-xs text-blue-200/90 mt-0.5">{subtitle}</p>}
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-[#1F3864] text-white flex items-center justify-between">
+          <div className="min-w-0 pr-2">
+            <h3 className="font-bold text-sm sm:text-base tracking-wide text-white truncate">{title}</h3>
+            {subtitle && <p className="text-[11px] sm:text-xs text-blue-200/90 mt-0.5 truncate">{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition"
+            className="p-1 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition shrink-0"
+            aria-label="Fermer la modale"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 max-h-[80vh] overflow-y-auto">{children}</div>
+        <div className="p-3.5 sm:p-6 max-h-[85vh] overflow-y-auto">{children}</div>
       </div>
     </div>
   );

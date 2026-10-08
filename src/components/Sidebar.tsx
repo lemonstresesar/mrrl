@@ -15,6 +15,7 @@ import {
   LogOut,
   Hospital,
   UserCheck,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -25,6 +26,8 @@ interface SidebarProps {
   onNavigate: (view: string) => void;
   unopenedAlertsCount?: number;
   pendingControlledCount?: number;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,9 +35,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNavigate,
   unopenedAlertsCount = 0,
   pendingControlledCount = 0,
+  mobileOpen = false,
+  onCloseMobile,
 }) => {
   const { user, logout, demoLogin } = useAuth();
   const { t } = useLanguage();
+
+  const handleNavClick = (viewId: string) => {
+    onNavigate(viewId);
+    if (onCloseMobile) onCloseMobile();
+  };
+
+  const handleRoleSwitch = (role: UserRole) => {
+    demoLogin(role);
+    if (onCloseMobile) onCloseMobile();
+  };
+
+  const handleLogout = () => {
+    logout();
+    if (onCloseMobile) onCloseMobile();
+  };
 
   const navItems = [
     { id: 'dashboard', label: t('nav_dashboard'), icon: LayoutDashboard, roles: ['admin', 'logistique', 'pharmacien', 'maintenance', 'chef_service'] },
@@ -88,23 +108,39 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const roleInfo = getRoleBadge(user?.role || '');
 
   return (
-    <aside className="w-64 bg-[#1F3864] text-white flex flex-col h-screen shrink-0 border-r border-[#162a4d] shadow-xl select-none">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-[#1F3864] text-white flex flex-col h-screen shrink-0 border-r border-[#162a4d] shadow-2xl transition-transform duration-300 ease-in-out select-none lg:static lg:w-64 lg:translate-x-0 ${
+        mobileOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
       {/* Brand & Hospital Banner */}
-      <div className="p-4 border-b border-[#2d4d82] flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-[#2E74B5] flex items-center justify-center text-white shadow-md">
-          <Hospital className="w-6 h-6" />
+      <div className="p-4 border-b border-[#2d4d82] flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="w-10 h-10 rounded-lg bg-[#2E74B5] flex items-center justify-center text-white shadow-md shrink-0">
+            <Hospital className="w-6 h-6" />
+          </div>
+          <div className="overflow-hidden">
+            <h1 className="font-bold text-base tracking-wide text-white flex items-center gap-1.5 truncate">
+              HGD MediGest
+            </h1>
+            <p className="text-[11px] text-blue-200/80 truncate">Hôpital Général de Douala</p>
+          </div>
         </div>
-        <div className="overflow-hidden">
-          <h1 className="font-bold text-base tracking-wide text-white flex items-center gap-1.5 truncate">
-            HGD MediGest
-          </h1>
-          <p className="text-[11px] text-blue-200/80 truncate">Hôpital Général de Douala</p>
-        </div>
+
+        {onCloseMobile && (
+          <button
+            onClick={onCloseMobile}
+            className="lg:hidden p-1.5 rounded-lg text-blue-200 hover:text-white hover:bg-white/10 transition shrink-0"
+            aria-label="Fermer le menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Profil utilisateur connecté & rôle */}
       <div className="p-3 mx-2 my-2 rounded-lg bg-[#162a4d]/80 border border-[#2d4d82]/60 flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-full bg-[#2E74B5] flex items-center justify-center font-bold text-xs uppercase shadow text-white">
+        <div className="w-9 h-9 rounded-full bg-[#2E74B5] flex items-center justify-center font-bold text-xs uppercase shadow text-white shrink-0">
           {user ? `${user.prenom[0]}${user.nom[0]}` : 'U'}
         </div>
         <div className="overflow-hidden flex-1 min-w-0">
@@ -125,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           return (
             <button
               key={item.id}
-              onClick={() => onNavigate(item.id)}
+              onClick={() => handleNavClick(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all text-left font-medium ${
                 isActive
                   ? 'bg-[#2E74B5] text-white shadow-md'
@@ -156,31 +192,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <div className="grid grid-cols-2 gap-1 text-[10px]">
           <button
-            onClick={() => demoLogin('admin')}
+            onClick={() => handleRoleSwitch('admin')}
             className={`px-1.5 py-1 rounded text-center truncate ${user?.role === 'admin' ? 'bg-purple-600 text-white font-bold' : 'bg-[#213b69] hover:bg-[#2c4e8a] text-blue-100'}`}
           >
             Admin
           </button>
           <button
-            onClick={() => demoLogin('logistique')}
+            onClick={() => handleRoleSwitch('logistique')}
             className={`px-1.5 py-1 rounded text-center truncate ${user?.role === 'logistique' ? 'bg-blue-600 text-white font-bold' : 'bg-[#213b69] hover:bg-[#2c4e8a] text-blue-100'}`}
           >
             Logistique
           </button>
           <button
-            onClick={() => demoLogin('pharmacien')}
+            onClick={() => handleRoleSwitch('pharmacien')}
             className={`px-1.5 py-1 rounded text-center truncate ${user?.role === 'pharmacien' ? 'bg-emerald-600 text-white font-bold' : 'bg-[#213b69] hover:bg-[#2c4e8a] text-blue-100'}`}
           >
             Pharmacie
           </button>
           <button
-            onClick={() => demoLogin('maintenance')}
+            onClick={() => handleRoleSwitch('maintenance')}
             className={`px-1.5 py-1 rounded text-center truncate ${user?.role === 'maintenance' ? 'bg-amber-600 text-white font-bold' : 'bg-[#213b69] hover:bg-[#2c4e8a] text-blue-100'}`}
           >
             Maintenance
           </button>
           <button
-            onClick={() => demoLogin('chef_service')}
+            onClick={() => handleRoleSwitch('chef_service')}
             className={`col-span-2 px-1.5 py-1 rounded text-center truncate ${user?.role === 'chef_service' ? 'bg-indigo-600 text-white font-bold' : 'bg-[#213b69] hover:bg-[#2c4e8a] text-blue-100'}`}
           >
             Chef Urgences
@@ -191,7 +227,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Déconnexion */}
       <div className="p-2 border-t border-[#2d4d82]">
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-rose-200 hover:bg-rose-950/40 hover:text-rose-100 transition"
         >
           <LogOut className="w-3.5 h-3.5" />

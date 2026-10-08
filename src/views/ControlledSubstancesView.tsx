@@ -168,10 +168,10 @@ export const ControlledSubstancesView: React.FC = () => {
       </div>
 
       {/* Onglets */}
-      <div className="flex items-center gap-2 border-b border-slate-200">
+      <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`px-4 py-2 text-xs font-bold border-b-2 transition flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold border-b-2 transition flex items-center gap-1.5 shrink-0 ${
             activeTab === 'pending'
               ? 'border-amber-600 text-amber-900'
               : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -182,7 +182,7 @@ export const ControlledSubstancesView: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('registry')}
-          className={`px-4 py-2 text-xs font-bold border-b-2 transition flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold border-b-2 transition flex items-center gap-1.5 shrink-0 ${
             activeTab === 'registry'
               ? 'border-amber-600 text-amber-900'
               : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -305,7 +305,8 @@ export const ControlledSubstancesView: React.FC = () => {
       {/* TAB 2 : REGISTRE SCELLÉ OFFICIEL */}
       {activeTab === 'registry' && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[750px]">
             <thead className="bg-[#1F3864] text-white font-semibold">
               <tr>
                 <th className="py-3 px-4">N° Registre</th>
@@ -380,6 +381,7 @@ export const ControlledSubstancesView: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

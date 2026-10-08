@@ -179,7 +179,8 @@ export const MaintenanceView: React.FC = () => {
 
       {/* Tableau des interventions */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs min-w-[700px]">
           <thead className="bg-[#1F3864] text-white font-semibold">
             <tr>
               <th className="py-3 px-4">ID</th>
@@ -266,6 +267,7 @@ export const MaintenanceView: React.FC = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Modal Création Intervention */}

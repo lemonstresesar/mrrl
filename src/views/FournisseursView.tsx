@@ -204,7 +204,8 @@ export const FournisseursView: React.FC = () => {
       {/* TAB 1 : COMMANDES */}
       {activeTab === 'commandes' && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#1F3864] text-white font-semibold">
               <tr>
                 <th className="py-3 px-4">Référence</th>
@@ -260,6 +261,7 @@ export const FournisseursView: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
@@ -309,7 +311,8 @@ export const FournisseursView: React.FC = () => {
           <div className="p-4 bg-slate-50 border-b border-slate-200 text-xs text-slate-600">
             Évaluation continue des grossistes et distributeurs médicaux sur la région de Douala.
           </div>
-          <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#1F3864] text-white font-semibold">
               <tr>
                 <th className="py-3 px-4">Fournisseur</th>
@@ -341,6 +344,7 @@ export const FournisseursView: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

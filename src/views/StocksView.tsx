@@ -294,7 +294,8 @@ export const StocksView: React.FC = () => {
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs min-w-[700px]">
               <thead className="bg-[#1F3864] text-white font-semibold">
                 <tr>
                   <th className="py-3 px-4">Code CIS</th>
@@ -386,6 +387,7 @@ export const StocksView: React.FC = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       )}
@@ -393,7 +395,8 @@ export const StocksView: React.FC = () => {
       {/* TAB 2 : LOTS AVEC RÈGLE FEFO */}
       {activeTab === 'lots' && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#1F3864] text-white font-semibold">
               <tr>
                 <th className="py-3 px-4">N° de Lot</th>
@@ -447,13 +450,15 @@ export const StocksView: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
       {/* TAB 3 : MOUVEMENTS */}
       {activeTab === 'mouvements' && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#1F3864] text-white font-semibold">
               <tr>
                 <th className="py-3 px-4">Type</th>
@@ -506,6 +511,7 @@ export const StocksView: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 

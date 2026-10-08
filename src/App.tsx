@@ -25,6 +25,11 @@ import {
   AlertTriangle,
   ArrowRight,
   Globe,
+  LayoutDashboard,
+  Stethoscope,
+  QrCode,
+  Pill,
+  Menu,
 } from 'lucide-react';
 import { UserRole } from './types';
 
@@ -126,108 +131,108 @@ const LoginScreen: React.FC = () => {
         </div>
       </header>
 
-      {/* Carte centrale principale ultra-aérée */}
-      <main className="max-w-6xl mx-auto w-full my-auto py-4">
-        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+      {/* Carte centrale principale ultra-aérée & responsive */}
+      <main className="max-w-6xl mx-auto w-full my-auto py-2 sm:py-4">
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/70 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
           
           {/* Colonne Gauche : Présentation institutionnelle noble et aérée */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-[#1F3864] to-[#2E74B5] p-8 sm:p-10 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden">
+          <div className="lg:col-span-5 bg-gradient-to-br from-[#1F3864] to-[#2E74B5] p-6 sm:p-8 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden">
             {/* Lueur subtile en arrière-plan */}
             <div className="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-2xl pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-blue-900/40 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="relative space-y-6">
+            <div className="relative space-y-4 sm:space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-medium backdrop-blur-xs text-blue-100">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
                 <span>Portail Hospitalier Sécurisé</span>
               </div>
 
               <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
                   Gestion Intégrée des Ressources Médicales
                 </h1>
-                <p className="text-sm text-blue-100/90 font-normal mt-3 leading-relaxed">
+                <p className="text-xs sm:text-sm text-blue-100/90 font-normal mt-2 sm:mt-3 leading-relaxed">
                   Pilotage centralisé du parc d'équipements biomédicaux, des lits d'hospitalisation, des stocks selon la règle FEFO et de la double-validation des stupéfiants.
                 </p>
               </div>
 
-              <div className="pt-4 space-y-4 text-xs sm:text-sm text-blue-100/90">
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
-                    <ShieldCheck className="w-4 h-4" />
+              <div className="pt-2 sm:pt-4 space-y-3 sm:space-y-4 text-xs sm:text-sm text-blue-100/90">
+                <div className="flex items-start gap-2.5 sm:gap-3">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <div>
                     <span className="font-semibold text-white block">Priorité FEFO & Périmés</span>
-                    <span className="text-xs text-blue-200/80">Sortie stricte des lots à péremption la plus proche pour zéro gaspillage.</span>
+                    <span className="text-xs text-blue-200/80 hidden sm:block">Sortie stricte des lots à péremption la plus proche pour zéro gaspillage.</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
-                    <Lock className="w-4 h-4" />
+                <div className="flex items-start gap-2.5 sm:gap-3">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
+                    <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <div>
                     <span className="font-semibold text-white block">Double Validation Stupéfiants</span>
-                    <span className="text-xs text-blue-200/80">Circuit de dispensation contrôlé (Morphine, Fentanyl) conforme à la réglementation.</span>
+                    <span className="text-xs text-blue-200/80 hidden sm:block">Circuit de dispensation contrôlé (Morphine, Fentanyl) conforme à la réglementation.</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
-                    <UserCheck className="w-4 h-4" />
+                <div className="flex items-start gap-2.5 sm:gap-3">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-emerald-300 mt-0.5">
+                    <UserCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                   <div>
                     <span className="font-semibold text-white block">Traçabilité & Codes QR</span>
-                    <span className="text-xs text-blue-200/80">Identification immédiate des lits et équipements par scanner mobile.</span>
+                    <span className="text-xs text-blue-200/80 hidden sm:block">Identification immédiate des lits et équipements par scanner mobile.</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="relative pt-8 mt-6 border-t border-white/15 text-xs text-blue-200/70 flex items-center justify-between">
-              <span>Hôpital Général de Douala • Makepe / Beedi</span>
+            <div className="relative pt-4 sm:pt-8 mt-4 sm:mt-6 border-t border-white/15 text-xs text-blue-200/70 flex items-center justify-between">
+              <span>Hôpital Général de Douala</span>
               <span className="text-[11px] font-mono opacity-80">DUT Médical</span>
             </div>
           </div>
 
           {/* Colonne Droite : Espace de Connexion & Accès Rapide par Rôle */}
-          <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
+          <div className="lg:col-span-7 p-4 sm:p-8 lg:p-12 flex flex-col justify-between bg-white">
             <div>
               {/* En-tête avec titre clair */}
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                   Bienvenue sur MediGest
                 </h2>
-                <p className="text-slate-500 text-sm mt-1">
+                <p className="text-slate-500 text-xs sm:text-sm mt-1">
                   Choisissez votre méthode d'accès pour démarrer votre session :
                 </p>
               </div>
 
               {/* Sélecteur d'onglets ergonomique et moderne */}
-              <div className="flex p-1 bg-slate-100 rounded-xl mb-6">
+              <div className="flex p-1 bg-slate-100 rounded-xl mb-4 sm:mb-6">
                 <button
                   type="button"
                   onClick={() => setActiveTab('quick')}
-                  className={`flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${
                     activeTab === 'quick'
                       ? 'bg-white text-blue-900 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <UserCheck className="w-4 h-4 text-blue-700" />
-                  <span>Accès Rapide par Rôle (1 Clic)</span>
+                  <UserCheck className="w-4 h-4 text-blue-700 shrink-0" />
+                  <span className="truncate">Accès Rapide (1 Clic)</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab('form')}
-                  className={`flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${
                     activeTab === 'form'
                       ? 'bg-white text-blue-900 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <Mail className="w-4 h-4 text-blue-700" />
-                  <span>Identifiants / Mot de passe</span>
+                  <Mail className="w-4 h-4 text-blue-700 shrink-0" />
+                  <span className="truncate">Identifiants</span>
                 </button>
               </div>
 
@@ -412,6 +417,7 @@ const MainApp: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>('dashboard');
   const [unopenedAlertsCount, setUnopenedAlertsCount] = useState<number>(0);
   const [pendingControlledCount, setPendingControlledCount] = useState<number>(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   const refreshBadges = async () => {
     if (!isAuthenticated) return;
@@ -446,26 +452,41 @@ const MainApp: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-slate-100 overflow-hidden font-sans text-slate-800">
-      {/* Sidebar gauche en bleu marine HGD #1F3864 */}
+    <div className="flex h-screen bg-slate-100 overflow-hidden font-sans text-slate-800 relative">
+      {/* Overlay Backdrop sombre sur Mobile/Tablette */}
+      {mobileMenuOpen && (
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar gauche en bleu marine HGD #1F3864 (Tiroir coulissant sur mobile) */}
       <Sidebar
         currentView={currentView}
-        onNavigate={setCurrentView}
+        onNavigate={(view) => {
+          setCurrentView(view);
+          setMobileMenuOpen(false);
+        }}
         unopenedAlertsCount={unopenedAlertsCount}
         pendingControlledCount={pendingControlledCount}
+        mobileOpen={mobileMenuOpen}
+        onCloseMobile={() => setMobileMenuOpen(false)}
       />
 
       {/* Zone Principale */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Top Header */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
+        {/* Top Header avec bouton toggle menu sur mobile */}
         <Header
           onOpenScanner={() => setCurrentView('qr_scanner')}
           onOpenAlerts={() => setCurrentView('alerts')}
           unopenedAlertsCount={unopenedAlertsCount}
+          onToggleMobileMenu={() => setMobileMenuOpen((prev) => !prev)}
         />
 
-        {/* Corps de vue avec défilement */}
-        <main className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+        {/* Corps de vue avec défilement fluide et marge basse pour barre mobile */}
+        <main className="flex-1 overflow-y-auto p-3 sm:p-6 pb-20 lg:pb-6 custom-scrollbar">
           {currentView === 'dashboard' && <DashboardView onNavigate={setCurrentView} />}
           {currentView === 'equipements' && <EquipementsView />}
           {currentView === 'qr_scanner' && <QRScannerView />}
@@ -479,6 +500,78 @@ const MainApp: React.FC = () => {
           {currentView === 'audit' && <AuditView />}
           {currentView === 'admin' && <AdminView />}
         </main>
+
+        {/* Barre de navigation inférieure sur Smartphone (Mobile Bottom Navigation) */}
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-xl px-2 py-1.5 flex items-center justify-around safe-area-bottom">
+          <button
+            onClick={() => {
+              setCurrentView('dashboard');
+              setMobileMenuOpen(false);
+            }}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-semibold transition ${
+              currentView === 'dashboard'
+                ? 'text-[#2E74B5]'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <LayoutDashboard className="w-5 h-5" />
+            <span>Accueil</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setCurrentView('equipements');
+              setMobileMenuOpen(false);
+            }}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-semibold transition ${
+              currentView === 'equipements'
+                ? 'text-[#2E74B5]'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <Stethoscope className="w-5 h-5" />
+            <span>Matériel</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setCurrentView('qr_scanner');
+              setMobileMenuOpen(false);
+            }}
+            className="flex flex-col items-center justify-center -mt-5 bg-[#2E74B5] hover:bg-[#256199] text-white w-12 h-12 rounded-full shadow-lg shadow-blue-900/20 active:scale-95 transition"
+            title="Scanner QR Code"
+          >
+            <QrCode className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={() => {
+              setCurrentView('stocks');
+              setMobileMenuOpen(false);
+            }}
+            className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-semibold transition ${
+              currentView === 'stocks'
+                ? 'text-[#2E74B5]'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <Pill className="w-5 h-5" />
+            <span>Stocks</span>
+          </button>
+
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg text-[10px] font-semibold text-slate-500 hover:text-slate-900 transition relative"
+          >
+            <div className="relative">
+              <Menu className="w-5 h-5" />
+              {unopenedAlertsCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-600 rounded-full animate-pulse" />
+              )}
+            </div>
+            <span>Menu</span>
+          </button>
+        </nav>
       </div>
     </div>
   );

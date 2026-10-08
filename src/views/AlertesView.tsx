@@ -237,7 +237,8 @@ export const AlertesView: React.FC = () => {
           <div className="p-4 bg-slate-50 border-b border-slate-200 text-xs text-slate-600">
             Journal de simulation des SMS envoyés aux cadres d'astreinte hospitalière (Direction, Chefs de Service, Pharmaciens, Ingénieurs Biomed).
           </div>
-          <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-[#1F3864] text-white font-semibold">
               <tr>
                 <th className="py-3 px-4">Destinataire</th>
@@ -275,6 +276,7 @@ export const AlertesView: React.FC = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
